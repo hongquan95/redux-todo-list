@@ -27,7 +27,33 @@
 .App-link {
   color: #61dafb;
 }
-
+.same-width {
+  width: 106px;
+  height: 37px;
+  line-height: 30px!important;
+}
+.dropdown-toggle::after
+{
+  content: none!important;
+}
+.sort.dropdown-menu {
+  min-width: 6rem!important;
+  padding-left: .5rem!important;
+}
+.sort.dropdown-menu a {
+  position: relative;
+}
+.sort.dropdown-menu a .active {
+  left: 4px;
+  position: absolute;
+  top: 9px;
+}
+.sort.dropdown-menu a:hover {
+  cursor: pointer!important;
+}
+.sort.dropdown-menu a:active {
+  background-color: unset!important;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
