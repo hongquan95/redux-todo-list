@@ -32,8 +32,4 @@ const mapStateToProps = (state) => ({
     isDisplay: state.form.isDisplay
 })
 
-const mapDispatchToProps = (dispatch) => ({
-})
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, null)(App);
