@@ -1,6 +1,9 @@
 import React from 'react';
 import { faTrashAlt, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { removeTask, updateTask } from '../actions/task';
+import { connect } from 'react-redux';
+import { setTaskEdit, toggle } from '../actions/form';
 /*eslint-disable eqeqeq*/
 const Task = (props) => {
     const getStatus = (val) => {
@@ -27,10 +30,11 @@ const Task = (props) => {
     }
 
     const onDelete = () => {
-        props.onRemove(props.task.id)
+        props.removeTask(props.task.id)
     }
     const onEdit = () => {
-        props.onEdit(props.task.id)
+        props.setTaskEdit(props.task)
+        props.toggle('open')
     }
     return (
         <tr>
@@ -44,5 +48,14 @@ const Task = (props) => {
         </tr>
     );
 }
+const mapStateToProps = (state) => ({
 
-export default Task;
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    removeTask: (id) => dispatch(removeTask(id)),
+    updateTask: (task) => dispatch(updateTask(task)),
+    setTaskEdit: (task) => dispatch(setTaskEdit(task)),
+    toggle: (status) => dispatch(toggle(status))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Task);

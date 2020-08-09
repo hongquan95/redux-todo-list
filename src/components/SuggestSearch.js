@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { filterTable } from '../actions/task';
+import { connect } from 'react-redux';
 
 const SuggestSearch = (props) => {
     const [filter, setFilter] = useState({
@@ -9,21 +11,13 @@ const SuggestSearch = (props) => {
         var { name } = e.target;
         var params = {...filter, [name]: e.target.value};
         setFilter(params)
-        props.onFilter(params);
+        props.filterTable(params);
     }
-    useEffect(() => {
-        if (props.isCreateOrUpdate) {
-            setFilter({
-                state: "0",
-                name: ""
-            })
-        }
-    }, [props.isCreateOrUpdate]);
     return (
         <tr>
             <th scope="row"></th>
             <td>
-                <input type="text" className="form-control" placeholder="" onChange={ onChange } name="name" value={filter.name}/>
+                <input type="text" className="form-control" placeholder="" onChange={ onChange } name="name" value={filter.name} autoComplete="off" />
             </td>
             <td>
                 <select className="custom-select" name="state" onChange={ onChange } value={filter.state}>
@@ -38,5 +32,13 @@ const SuggestSearch = (props) => {
     );
 }
 
-export default SuggestSearch;
+const mapStateToProps = (state) => ({
+
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    filterTable: (params) => dispatch(filterTable(params))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SuggestSearch);
 

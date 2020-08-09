@@ -3,6 +3,10 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {Form as FormLib} from 'react-bootstrap';
 import _ from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
+import { connect } from 'react-redux'
+import { addTask, updateTask } from '../actions/task';
+import { toggle } from '../actions/form';
 
 const Form = (props) => {
     const [params, setParams] = useState({
@@ -11,14 +15,14 @@ const Form = (props) => {
     });
 
     useEffect(() => {
-        !_.isEmpty(props.editTask) ?
-            setParams(props.editTask) :
+        !_.isEmpty(props.taskEdit) ?
+            setParams({...props.taskEdit}) :
             setParams({
                 name: '',
                 state: '1',
             })
 
-    }, [props.editTask])
+    }, [props.taskEdit])
     const [validated, setValidated] = useState(false);
     const handleSubmit = (event) => {
         const form = event.currentTarget;
@@ -26,11 +30,20 @@ const Form = (props) => {
             setValidated(true);
         } else {
             setValidated(false);
-            props.handleFormSubmit(params);
+            // props.handleFormSubmit(params);
+            if (params.id) {
+                props.updateTask(
+                    {...params }
+                )
+            } else {
+                props.addTask(
+                    {...params, id: uuidv4()}
+                )
+            }
             setParams({
                 name: '',
                 state: '1',
-            }) 
+            })
         }
         event.preventDefault();
         event.stopPropagation();
@@ -39,10 +52,11 @@ const Form = (props) => {
         const name = e.target.name;
         setParams({ ...params, [name]: e.target.value });
     }
+    if (!props.isDisplay) return '';
     return (
         <div className="border rounded">
             <h4 className="bg-warning p-2">{ !params.id ? 'Add Task' : 'Update Task' }</h4>
-            <div onClick={() => props.onShowForm(false)}>
+            <div onClick={() => props.toggleForm('close')}>
                 <FontAwesomeIcon icon={faTimes} style={{ position: 'absolute', top: 16, right: 29, cursor: 'pointer' }} />
             </div>
             <FormLib noValidate className=" p-2 text-left" onSubmit={handleSubmit} validated={validated}>
@@ -69,6 +83,16 @@ const Form = (props) => {
         </div>
     );
 }
+const mapStateToProps = (state) => ({
+    isDisplay: state.form.isDisplay,
+    taskEdit: state.form.taskEdit,
+})
 
-export default Form;
+const mapDispatchToProps = dispatch => ({
+    addTask: (payload) => dispatch(addTask(payload)),
+    updateTask: (payload) => dispatch(updateTask(payload)),
+    toggleForm: (val) => dispatch(toggle(val)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form);
 
